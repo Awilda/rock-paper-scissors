@@ -5,7 +5,9 @@ export default class RockPaperScissorsApp extends React.Component {
 	super(props)
 	this.state = {
 		choices: ['Rock', 'Paper', 'Scissors'],
-		chosen: ''
+		chosen: '',
+		computer: '',
+		message: 'You Win!'
 	};
 	}
 	randomChoice = () => {
@@ -13,8 +15,9 @@ export default class RockPaperScissorsApp extends React.Component {
 		const pick = this.state.choices[randomPick];
 		console.log(pick);
 	};
-	findWinner = () => {
-		console.log("reading from findWinner function");
+	findWinner = (randomChoice) => {
+		console.log("findWinner");
+		console.log(this.state.chosen);
 	};
 
   render() {
@@ -22,20 +25,25 @@ export default class RockPaperScissorsApp extends React.Component {
     	<div>
       		<Header />
       		<Choices choices={this.state.choices} chosen={this.handleSubmit} />
-      		<ComputerChoice randomChoice={this.randomChoice} findWinner={this.findWinner} />
+      		<ComputerChoice 
+      			randomChoice={this.randomChoice} 
+      			computer={this.state.computer}
+      		/>
+      		<GetWinningPlayer 
+      			findWinner={this.findWinner}
+      			message={this.state.message}
+      		/>
       	</div>
     );
   }
 }
 
-class Header extends React.Component {
-	render() {
-		return (
-			<div>
-				<h1>Rock, Paper, Scissors sayyysss...</h1>
-			</div>
-		);
-	}
+const Header = () => {
+	return (
+		<div>
+			<h1>Rock, Paper, Scissors sayyysss...</h1>
+		</div>
+	);
 }
 
 class Choices extends React.Component {
@@ -63,14 +71,42 @@ class Choices extends React.Component {
 	}
 }
 
-const ComputerChoice = (props) => {
-	return (
-		<div>
-			<button 
-				onClick={props.randomChoice}
-				>
-					Shoot!
-			</button>
-		</div>
-	);
-};
+class ComputerChoice extends React.Component {
+	constructor(props) {
+		super(props);
+		this.randomChoice = props.randomChoice.bind(this);
+	}
+	handleSubmit = computer => {
+		this.setState({ computer });
+		console.log(computer);
+	}	
+	render() {
+		return (
+			<div>
+				<button 
+					onClick={e => this.randomChoice(e.target.value)}
+					>
+						randomChoice
+				</button>
+			</div>
+		);
+	}
+}
+
+class GetWinningPlayer extends React.Component {
+	constructor(props) {
+		super(props);
+		this.findWinner = props.findWinner.bind(this);
+	}
+	render() {
+		return (
+			<div>
+				<button
+					onClick={e => this.findWinner(e.target.value)}
+					>
+						findWinner
+				</button>
+			</div>
+		);
+	}
+}
