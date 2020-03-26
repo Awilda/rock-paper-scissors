@@ -13,6 +13,11 @@ export default class RockPaperScissorsApp extends React.Component {
 	randomChoice = () => {
 		const randomPick = Math.floor(Math.random() * this.state.choices.length);
 		const pick = this.state.choices[randomPick];
+
+		this.setState(() => ({ 
+			computer: pick 
+		}));
+
 		console.log(pick);
 	};
 	findWinner = (randomChoice) => {
@@ -76,14 +81,10 @@ class ComputerChoice extends React.Component {
 		super(props);
 		this.randomChoice = props.randomChoice.bind(this);
 	}
-	handleSubmit = computer => {
-		this.setState({ computer });
-		console.log(computer);
-	}	
 	render() {
 		return (
 			<div>
-				<button 
+				<button
 					onClick={e => this.randomChoice(e.target.value)}
 					>
 						randomChoice
