@@ -6,61 +6,27 @@ export default class RockPaperScissorsApp extends React.Component {
 	this.state = {
 		choices: ['Rock', 'Paper', 'Scissors'],
 		chosen: '',
-		computer: '',
-		message: 'You Lose!'
+		computer: ''
 	};
 	this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	randomChoice = () => {
+	componentDidMount() {
 		const randomPick = Math.floor(Math.random() * this.state.choices.length);
-		const pick = this.state.choices[randomPick];
-
 		this.setState(() => ({ 
-			computer: pick 
+			computer: this.state.choices[randomPick]
 		}));
+	}
 
-		if(this.randomChoice) {
-			return this.findWinner();
-		}
-	};
-
-	findWinner = () => {
-		const playerChoice = this.state.chosen;
-		const computerChoice = this.state.computer;
-
-		if (playerChoice == 'Rock' && computerChoice == 'Scissors' ||
-			playerChoice == 'Paper' && computerChoice == 'Rock' ||
-			playerChoice == 'Scissors' && computerChoice == "Paper") {
-			
-			this.setState(() => ({ 
-				message: 'You Win!' 
-			}));
-		
-		} else if (playerChoice == 'Rock' && computerChoice == 'Rock' ||
-				playerChoice == 'Paper' && computerChoice == 'Paper' ||
-				playerChoice == 'Scissors' && computerChoice == 'Scissors') {
-
-			this.setState(() => ({ 
-				message: 'It\'s A Tie!' 
-			}));
-		}
-
-	};
-
-	handleSubmit = chosen => {
+	handleSubmit = (chosen) => {
 		this.setState({ chosen });
-		console.log(chosen);
-		if(chosen !== '') {
-			return this.randomChoice();
-		}
-	};	
+	};
 
-  render() {
-    return (
-    	<div>
-      		<Header />
-      		{this.state.choices.map((choice, index) =>
+  	render() {
+    	return (
+    		<div>
+      			<Header />
+      			{this.state.choices.map((choice, index) =>
 				<button 
 					key={choice}
 					type="button"
@@ -68,9 +34,13 @@ export default class RockPaperScissorsApp extends React.Component {
 					onClick={e => this.handleSubmit(e.target.value)}
 				>{choice}
 				</button>)}
-      	</div>
-    );
-  }
+      			<Message
+      			computer={this.state.computer}
+      			chosen={this.state.chosen}
+      			/>
+      		</div>
+    	);
+  	}
 }
 
 const Header = () => {
@@ -80,4 +50,35 @@ const Header = () => {
 			<h3>Choose your pick!</h3>
 		</div>
 	);
+}
+
+class Message extends React.Component {
+	constructor(props) {
+		super(props)
+		this.handleWinner = this.handleWinner.bind(this);
+	}
+	handleWinner = () => {
+		const chosen = this.props.chosen;
+		const computer = this.props.computer;
+		if (chosen === 'Rock' && computer === 'Scissors' ||
+			chosen === 'Paper' && computer === 'Rock' ||
+			chosen === 'Scissors' && computer === "Paper") {
+			return "You Win!"		
+		}
+		if (chosen === 'Rock' && computer === 'Rock' ||
+				chosen === 'Paper' && computer === 'Paper' ||
+				chosen === 'Scissors' && computer === 'Scissors') {
+			return 'It\'s A Tie!';
+		}
+		return 'You Lose!';
+	}
+	render() {
+		return (
+			<div>
+				<h1>{this.handleWinner()}</h1>
+				<p>You chose: {this.props.chosen}</p>
+				<p>Player 2 chose: {this.props.computer}</p>
+			</div>
+		);
+	}
 }
